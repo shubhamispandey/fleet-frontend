@@ -14,6 +14,8 @@ type InputProps = {
   id: string;
   disabled?: boolean;
   value?: string;
+  maxLength?: number;
+  ref?: React.Ref<HTMLInputElement>;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: (e: FocusEvent<HTMLInputElement>) => void;
   onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
@@ -38,6 +40,8 @@ const Input: FC<InputProps> = ({
   onFocus,
   onBlur,
   onKeyDown,
+  ref,
+  maxLength,
   parentStyle,
   inputStyle,
   labelStyle,
@@ -65,13 +69,14 @@ const Input: FC<InputProps> = ({
           type={type}
           placeholder={placeholder}
           value={value}
+          maxLength={maxLength}
           onChange={onChange}
           onFocus={onFocus}
           onBlur={onBlur}
           onKeyDown={onKeyDown}
           disabled={disabled}
           style={inputStyle}
-          className={`block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 focus-visible:outline-primary sm:text-sm sm:leading-6 ${
+          className={`block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 focus-visible:outline-primary sm:text-sm sm:leading-6 ${
             disabled ? "bg-gray-100 cursor-not-allowed" : "text-gray-900"
           }`}
         />

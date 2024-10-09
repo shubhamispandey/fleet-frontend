@@ -1,11 +1,5 @@
 import { toast } from "react-toastify";
-
-type ToastType = "info" | "success" | "warning" | "error";
-
-type NotifyProps = {
-  message: string;
-  type: ToastType;
-};
+import { NotifyProps } from "@/types";
 
 const UseDrawers = () => {
   const notify = ({ message, type }: NotifyProps) => {

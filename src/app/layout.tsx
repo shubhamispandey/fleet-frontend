@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import AuthProvider from "@/components/authProvider/AuthProvider";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import ReduxProvider from "@/redux/redux-provider";
 
 const openSansFont = Open_Sans({ subsets: ["latin"] });
 
@@ -32,8 +33,10 @@ export default function RootLayout({
       </head>
       <body className={`${openSansFont.className} antialiased`}>
         <AuthProvider>
-          {children}
-          <ToastContainer />
+          <ReduxProvider>
+            {children}
+            <ToastContainer />
+          </ReduxProvider>
         </AuthProvider>
       </body>
     </html>

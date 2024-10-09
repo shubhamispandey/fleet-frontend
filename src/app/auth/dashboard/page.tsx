@@ -3,7 +3,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@headlessui/react";
-import useAuth from "@/components/auth/useAuth";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -22,4 +21,4 @@ const Dashboard = () => {
   );
 };
 
-export default useAuth(Dashboard);
+export default Dashboard;

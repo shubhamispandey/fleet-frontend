@@ -1,5 +1,6 @@
 "use client";
 
+import { RootState } from "@/redux/store";
 import {
   Disclosure,
   DisclosureButton,
@@ -10,8 +11,9 @@ import {
 } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-// import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -27,6 +29,13 @@ function classNames(...classes: string[]): string {
 export default function Navbar() {
   const [toggleNav, setToggleNav] = useState(true);
   const session = useSession();
+  const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+  const authState = useTypedSelector((state) => state.auth.login.data);
+
+  const handleSignOut = () => {
+    signOut();
+    localStorage.clear();
+  };
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -93,18 +102,22 @@ export default function Navbar() {
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
               <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                <MenuButton className="relative flex rounded-full border-slate-800 bg-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
-                  {session.data?.user?.image && (
-                    <Image
-                      alt=""
-                      src={session.data?.user?.image}
-                      className="h-8 w-8 rounded-full"
-                      width={32}
-                      height={32}
-                    />
-                  )}
+
+                  <Image
+                    alt=""
+                    src={
+                      session.data?.user?.image ||
+                      `/img/avatars/${
+                        (authState as any)?.avatar || "user.webp"
+                      }`
+                    }
+                    className="h-8 w-8 rounded-full"
+                    width={32}
+                    height={32}
+                  />
                 </MenuButton>
               </div>
               <MenuItems
@@ -112,29 +125,29 @@ export default function Navbar() {
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
                 <MenuItem>
-                  <a
-                    href="#"
+                  <Link
+                    href=""
                     className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                   >
                     Your Profile
-                  </a>
+                  </Link>
                 </MenuItem>
                 <MenuItem>
-                  <a
-                    href="#"
+                  <Link
+                    href=""
                     className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                   >
                     Settings
-                  </a>
+                  </Link>
                 </MenuItem>
                 <MenuItem>
-                  <a
-                    href="#"
+                  <Link
+                    href=""
                     className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                    onClick={() => signOut()}
+                    onClick={handleSignOut}
                   >
                     Sign out
-                  </a>
+                  </Link>
                 </MenuItem>
               </MenuItems>
             </Menu>
