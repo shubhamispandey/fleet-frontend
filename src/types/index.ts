@@ -18,7 +18,7 @@ export interface LoginParams {
 }
 
 export interface ApiResponse {
-  data: object;
+  data: any;
   message: string;
   status: number;
 }
@@ -26,4 +26,13 @@ export interface ApiResponse {
 export interface VerifyOtpParams {
   email: string;
   otp: string;
+}
+
+export interface createMeetParams {
+  email: string;
+}
+
+export interface getMeetInfoParams {
+  email: string;
+  code: string;
 }

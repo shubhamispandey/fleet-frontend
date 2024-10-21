@@ -6,13 +6,14 @@ interface ButtonProps {
   fullWidth?: boolean;
   disabled?: boolean;
   loading?: boolean;
-  label: string;
+  label?: string;
   iconLeft?: React.ReactNode;
   icon?: React.ReactNode;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   onFocus?: (event: FocusEvent<HTMLButtonElement>) => void;
   onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
   tooltip?: string;
+  style?: React.CSSProperties;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -28,9 +29,10 @@ const Button: FC<ButtonProps> = ({
   onFocus,
   onBlur,
   tooltip,
+  style = {},
 }) => {
   const baseClasses =
-    "flex justify-center relative rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition-all duration-200";
+    "flex justify-center items-center gap-2 relative rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition-all duration-200";
   const primaryClasses =
     "bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600";
   const secondaryClasses =
@@ -53,8 +55,9 @@ const Button: FC<ButtonProps> = ({
       className={`${baseClasses} ${
         kind === "primary" ? primaryClasses : secondaryClasses
       } ${fullWidth ? "w-full" : ""} ${className}`}
+      style={style}
     >
-      {iconLeft && <span className="mr-2">{iconLeft}</span>}
+      {iconLeft && <span className="">{iconLeft}</span>}
       {loading ? (
         <span className="absolute right-2 top-1/2 -translate-y-1/2">
           <div
@@ -65,7 +68,7 @@ const Button: FC<ButtonProps> = ({
         <></>
       )}
       {label && <span>{label}</span>}
-      {icon && <span className="ml-2">{icon}</span>}
+      {icon && <span className="flex items-center">{icon}</span>}
     </button>
   );
 };

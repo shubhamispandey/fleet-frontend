@@ -8,6 +8,11 @@ const config = {
       resendOtp: "/resend-otp",
       getUser: "/user",
     },
+    meet: {
+      baseUrl: "/meet",
+      createMeet: "/create-meet",
+      getMeetInfo: "/get-meet-info",
+    },
   },
 };
 export default config;

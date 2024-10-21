@@ -1,8 +1,4 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -71,8 +67,13 @@ const makeApiCall = async <T>({
       headers: customHeaders,
       responseType,
     });
+
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.response?.data?.status === 0) {
+      localStorage.clear();
+      window.location.href = "/login";
+    }
     throw error;
   }
 };
