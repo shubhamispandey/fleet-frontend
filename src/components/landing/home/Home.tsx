@@ -3,7 +3,7 @@ import React from "react";
 
 const Home = () => {
   return (
-    <section className="bg-[url('/img/landing/hero/hero-bg.svg')] bg-cover bg-bottom bg-no-repeat -mt-[5rem] relative pt-48 pb-12 min-h-[120vh]">
+    <section className="bg-[url('/img/landing/hero/hero-bg.svg')] dark:bg-slate-800 bg-cover bg-bottom bg-no-repeat -mt-[5rem] relative pt-48 pb-12 min-h-[120vh]">
       <div className="container mx-auto">
         <div className="md:grid md:grid-rows-1 md:grid-cols-2">
           <div className="mb-10 mt-10 md:mb-0  animate__animated animate__fadeInUp">
@@ -15,7 +15,7 @@ const Home = () => {
               create a meeting
             </p>
             <div className="flex gap-4">
-              <button className="flex items-center gap-2 p-2 px-3 border-2 border-white rounded-md text-[15px] bg-white">
+              <button className="flex items-center gap-2 p-2 px-3 border-2 border-white rounded-md text-[15px] bg-white text-slate-700">
                 <i className="lni lni-video"></i> Create a Meeting
               </button>
               <button className="flex items-center gap-2 p-2 px-3 border-2 border-white rounded-md text-[15px] text-white transition hover:bg-white hover:text-slate-900">

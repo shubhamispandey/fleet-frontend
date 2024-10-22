@@ -1,24 +1,30 @@
 "use client";
 
-import { useLayoutEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-const useAuth = (Component: React.FC) => {
-  const AuthWrapper: React.FC = (props) => {
-    const router = useRouter();
-    const session = useSession();
+const useAuth = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { status } = useSession();
+  const accessToken =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const router = useRouter();
 
-    useLayoutEffect(() => {
-      if (session.status === "unauthenticated") {
-        redirect("/");
-      }
-    }, [router, session]);
+  useEffect(() => {
+    if (status === "loading") {
+      setIsLoading(true);
+    } else if (status === "unauthenticated" && !accessToken) {
+      setIsAuthenticated(false);
+      setIsLoading(false);
+    } else {
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    }
+  }, [status, accessToken, router]);
 
-    return <Component {...props} />;
-  };
-
-  return AuthWrapper;
+  return { isAuthenticated, isLoading };
 };
 
 export default useAuth;

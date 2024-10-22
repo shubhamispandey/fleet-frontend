@@ -1,16 +1,46 @@
-// app/login/page.tsx
-
 "use client";
+
+import { ChangeEvent, useLayoutEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 import Button from "@/components/button/Button";
 import Input from "@/components/input/Input";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
+import useAuth from "@/components/auth/useAuth";
+import useAuthHook from "@/hooks/useAuth";
+import { LoginParams } from "@/types";
+import Loader from "@/components/loader/Loader";
 
 export default function LoginPage() {
+  const [userData, setUserData] = useState<LoginParams>({
+    email: "shubhampandeyhaihum@gmail.com",
+    password: "Shubham#057",
+  });
+  const router = useRouter();
+  const { login } = useAuthHook();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useLayoutEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      redirect("/auth/dashboard");
+    }
+  }, [isAuthenticated, isLoading]);
+
+  if (isLoading || isAuthenticated) return <Loader />;
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    setUserData({ ...userData, [id]: value });
+  };
+
+  const handleLogin = () => {
+    login(userData, router.push);
+  };
+
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-white">
+    <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
           className="mx-auto h-10 w-auto"
@@ -25,9 +55,15 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
           <div>
-            <Input id="email" label="Email address" type="email" />
+            <Input
+              id="email"
+              label="Email address"
+              type="email"
+              onChange={handleInputChange}
+              value={userData.email}
+            />
             <div className="text-sm text-right mt-2">
               <Link
                 className="font-semibold text-indigo-600 hover:text-indigo-500"
@@ -36,7 +72,13 @@ export default function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <Input id="password" label="Password" type="password" />
+            <Input
+              id="password"
+              label="Password"
+              type="password"
+              onChange={handleInputChange}
+              value={userData.password}
+            />
           </div>
 
           <div>
@@ -46,11 +88,10 @@ export default function LoginPage() {
               className="mt-4"
               fullWidth={true}
               loading={false}
+              onClick={handleLogin}
             />
           </div>
         </form>
-
-        {/* Or in center arround dashed line */}
 
         <div className="relative w-full border-t-2 border-dashed my-8 after:content-['OR'] after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:text-slate-800 after:bg-white after:p-2"></div>
 

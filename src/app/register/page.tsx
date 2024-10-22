@@ -2,19 +2,51 @@
 
 "use client";
 
-import Button from "@/components/button/Button";
-import Input from "@/components/input/Input";
-import { signIn } from "next-auth/react";
+import { useLayoutEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { redirect, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import UseAuth from "@/hooks/useAuth";
+import Button from "@/components/button/Button";
+import Input from "@/components/input/Input";
+import useAuth from "@/components/auth/useAuth";
+import Loader from "@/components/loader/Loader";
+import { RegisterParams } from "@/types";
+import AvatarSelector from "@/components/avatarSelector/Avatar";
 
-export default function LoginPage() {
-  const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" });
+export default function RegisterPage() {
+  const [userData, setUserData] = useState<RegisterParams>({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    avatar: "user.webp",
+  });
+
+  const { isAuthenticated, isLoading } = useAuth();
+  const { register } = UseAuth();
+  const router = useRouter();
+
+  const authState = useSelector((state) => (state as any).auth.register);
+
+  useLayoutEffect(() => {
+    if (!isLoading && isAuthenticated) redirect("/auth/dashboard");
+  }, [isAuthenticated, isLoading]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, id } = e.target;
+    setUserData((prev: RegisterParams) => {
+      const temp = { ...prev };
+      temp[id as keyof RegisterParams] = value;
+      return temp;
+    });
   };
 
+  if (isLoading || isAuthenticated) return <Loader />;
+
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-white">
+    <div className="flex min-h-screen flex-col justify-center px-6 py-10 lg:px-8 bg-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
           className="mx-auto h-10 w-auto"
@@ -23,19 +55,50 @@ export default function LoginPage() {
           width={40}
           height={40}
         />
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Register your account
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-2" action="#" method="POST">
-          <Input id="email" label="Email address" type="email" />
-          <Input id="password" label="Password" type="password" />
+          <div>
+            <AvatarSelector
+              selectedAvatar={userData.avatar}
+              setSelectedAvatar={(avatar) => {
+                setUserData((prev) => {
+                  return { ...prev, avatar };
+                });
+              }}
+            />
+          </div>
           <Input
-            id="confirm-password"
+            id="name"
+            label="Full Name"
+            type="text"
+            value={userData.name}
+            onChange={handleChange}
+          />
+          <Input
+            id="email"
+            label="Email address"
+            type="email"
+            value={userData.email}
+            onChange={handleChange}
+          />
+          <Input
+            id="password"
+            label="Password"
+            type="password"
+            value={userData.password}
+            onChange={handleChange}
+          />
+          <Input
+            id="confirmPassword"
             label="Confirm Password"
             type="password"
+            value={userData.confirmPassword}
+            onChange={handleChange}
           />
 
           <div>
@@ -44,7 +107,8 @@ export default function LoginPage() {
               label="Register"
               className="mt-4"
               fullWidth={true}
-              loading={false}
+              loading={(authState as any).loading}
+              onClick={() => register(userData, router.push)}
             />
           </div>
         </form>
@@ -72,7 +136,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-sm text-gray-500">
           Already a member?{" "}
           <Link
             href="/login"
